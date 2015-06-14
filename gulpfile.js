@@ -1,3 +1,4 @@
+'use strict'
 let gulp = require('gulp');
 let browserify = require('browserify');
 let babelify = require('babelify');
@@ -5,7 +6,7 @@ let source = require('vinyl-source-stream');
 let watchify = require('watchify');
 
 /* browserify */ 
-gulp.task('browserify', ()=>{
+gulp.task('browserify', function() {
   let bundler = browserify({
     entries: ['./components/index.jsx'], // Only need initial file
     transform: [babelify], // Convert JSX to javascript
@@ -15,7 +16,7 @@ gulp.task('browserify', ()=>{
   let watcher  = watchify(bundler);
 
   return watcher
-  .on('update', ()=>{ // On update When any files updates
+  .on('update', function() { // On update When any files updates
     let updateStart = Date.now();
         watcher.bundle()
         .pipe(source('bundle.js'))
@@ -28,7 +29,7 @@ gulp.task('browserify', ()=>{
 });
 
 /* default */
-gulp.task('default', ['serve'], ()=>{});
+gulp.task('default', ['serve'], function() {});
 
 /* serve */
-gulp.task('serve', ['browserify'], ()=>{});
+gulp.task('serve', ['browserify'], function() {});
