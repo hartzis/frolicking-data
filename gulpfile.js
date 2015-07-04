@@ -8,7 +8,7 @@ let watchify = require('watchify');
 /* browserify */ 
 gulp.task('browserify', function() {
   let bundler = browserify({
-    entries: ['./components/index.jsx'], // Only need initial file
+    entries: ['./client/components/app.jsx'], // Only need initial file
     transform: [babelify], // Convert JSX to javascript
     debug: true, cache: {}, packageCache: {}, fullPaths: false
   });
@@ -20,12 +20,12 @@ gulp.task('browserify', function() {
     let updateStart = Date.now();
         watcher.bundle()
         .pipe(source('bundle.js'))
-        .pipe(gulp.dest('./client/js'));
+        .pipe(gulp.dest('./client/public/js'));
         console.log('Updated ', (Date.now() - updateStart) + 'ms');
   })
   .bundle() // Create initial bundle when starting the task 
   .pipe(source('bundle.js'))
-  .pipe(gulp.dest('./client/js'));
+  .pipe(gulp.dest('./client/public/js'));
 });
 
 /* default */

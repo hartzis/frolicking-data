@@ -1,9 +1,16 @@
 let React = require('react');
+let api = require('../services/apiService');
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+
+    };
+  }
+
+  componenetDidMount() {
+    
   }
 
   render() {
@@ -15,3 +22,5 @@ class App extends React.Component {
   }
 
 }
+
+React.render(<App />, document.getElementById('theApp'));
