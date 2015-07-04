@@ -23,7 +23,7 @@ class App extends React.Component {
     let frolicks = this.state.app.get('frolicks');
     let $frolicks = null;
     if (frolicks) {
-      $frolicks = frolicks.map(frolick=>(<div>{frolick.get('name')}</div>))
+      $frolicks = frolicks.map(frolick=>(<div key={frolick.get('id')}>{frolick.get('name')}</div>))
     }
     return (
       <div>
