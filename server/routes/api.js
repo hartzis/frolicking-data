@@ -18,6 +18,4 @@ router.get('/frolicks', frolickServices.getAll);
 // router.put '/frolicks/:frolickId', frolicks.update
 // router.put '/frolicks/updateByName/:name', frolicks.updateByName
 
-
-
 module.exports = router;

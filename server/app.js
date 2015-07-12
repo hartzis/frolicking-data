@@ -8,6 +8,8 @@ let mongoose = require('mongoose');
 var mongoDatabase = 'mongodb://localhost/frolicks';
 mongoose.connect(mongoDatabase);
 
+let imageServices = require('./services/imageServices');
+
 // setup views and templates
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'jade');
@@ -19,8 +21,14 @@ app.use('/api', routes);
 
 app.get('/', (req, res) => {
   console.log('loading index file');
-  res.render('index');
-  return;
+  return res.render('index');
 });
+
+app.get('/upload', (req, res) => {
+  console.log('upload a new image');
+  return res.render('uploadImage');
+});
+
+app.post('/upload', imageServices.saveImage);
 
 module.exports = app;

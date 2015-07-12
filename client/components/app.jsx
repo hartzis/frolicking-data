@@ -29,6 +29,7 @@ class App extends React.Component {
       <div>
         Hello App
         {$frolicks}
+        <a href="/upload">Upload new Image</a>
       </div>
     )
   }
