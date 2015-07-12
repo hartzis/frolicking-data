@@ -4,6 +4,10 @@ let path = require('path');
 let app = express();
 let routes = require('./routes/api');
 
+let mongoose = require('mongoose');
+var mongoDatabase = 'mongodb://localhost/frolicks';
+mongoose.connect(mongoDatabase);
+
 // setup views and templates
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'jade');

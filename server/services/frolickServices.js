@@ -1,3 +1,5 @@
+let Frolicks = require('../models/frolicks');
+
 const currentFrolicks = [
   {
     id: 1,
