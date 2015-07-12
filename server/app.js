@@ -17,6 +17,9 @@ app.set('view engine', 'jade');
 // serve js and css from "public" directory
 app.use(express.static(path.join(__dirname, '../client/public')));
 
+// where images are saved
+app.use('/images', express.static(path.join(__dirname, '../images')));
+
 app.use('/api', routes);
 
 app.get('/', (req, res) => {
@@ -25,7 +28,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/upload', (req, res) => {
-  console.log('upload a new image');
   return res.render('uploadImage');
 });
 
