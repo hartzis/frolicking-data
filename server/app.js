@@ -27,10 +27,6 @@ app.get('/', (req, res) => {
   return res.render('index');
 });
 
-app.get('/upload', (req, res) => {
-  return res.render('uploadImage');
-});
-
 app.post('/upload', imageServices.saveImage);
 
 module.exports = app;

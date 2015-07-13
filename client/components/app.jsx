@@ -1,6 +1,7 @@
 let React = require('react');
 let Immutable = require('immutable');
 let api = require('../services/apiService');
+let ImageUpload = require('./imageUpload.jsx');
 
 class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,14 @@ class App extends React.Component {
       })
   }
 
+  _uploadImage(imageFile) {
+    console.log('upload image-', imageFile);
+    api.uploadImage(imageFile)
+      .then((response)=>{
+        console.log(response);
+      })
+  }
+
   render() {
     let frolicks = this.state.app.get('frolicks');
     let $frolicks = null;
@@ -30,6 +39,7 @@ class App extends React.Component {
         Hello App
         {$frolicks}
         <a href="/upload">Upload new Image</a>
+        <ImageUpload onUploadImage={this._uploadImage} />
       </div>
     )
   }

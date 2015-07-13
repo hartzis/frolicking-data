@@ -5,6 +5,7 @@ function saveImage(req, res) {
   let form = new multiparty.Form();
 
   form.parse(req, (err, fields, files) => {
+    console.log('err-', err, 'fields-', fields, 'files-', files);
     let imageFile = files.imageFile[0];
     console.log('imageInfo-', imageFile);
 
