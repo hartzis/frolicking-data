@@ -22,11 +22,13 @@ let api = {
       .then(parseJSON);
   },
 
-  uploadImage(imageFile) {
+  uploadImage(imageInfo) {
     return new Promise((resolve, reject) => {
       let imageFormData = new FormData();
 
-      imageFormData.append('imageFile', imageFile);
+      imageFormData.append('imageFile', imageInfo.imageFile);
+      imageFormData.append('imageTitle', imageInfo.imageTitle);
+      imageFormData.append('imageDate', imageInfo.imageDate);
 
       // return fetch('/upload', {
       //   method: 'post',

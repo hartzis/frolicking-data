@@ -4,20 +4,25 @@ let Schema = mongoose.Schema;
 
 let frolickSchema = new Schema({
 
-  title: String,
-  date: Date,
-  story: String,
+  filename: {type: String, default: ''},
+  title: {type: String, default: ''},
+  date: {type: Date, default: Date.now},
+  description: {type: String, default: ''},
+  story: {type: String, default: ''},
   tags: [String],
   location: {
-    lat: Number,
-    long: Number,
-    city: String,
-    state: String,
-    country: String
+    lat: {type: String, default: ''},
+    long: {type: String, default: ''},
+    city: {type: String, default: ''},
+    state: {type: String, default: ''},
+    country: {type: String, default: ''}
   },
-  clicked: Boolean,
-  otherPeople: [String],
-  hasHat: Boolean
+  heelClicked: {type: Boolean, default: false},
+  midAir: {type: Boolean, default: false},
+  hasHat: {type: Boolean, default: false},
+  hasOtherPeople: {type: Boolean, default: false},
+  otherPeople: [String]
+  
 
 });
 

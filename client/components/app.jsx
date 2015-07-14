@@ -20,9 +20,9 @@ class App extends React.Component {
       })
   }
 
-  _uploadImage(imageFile) {
-    console.log('upload image-', imageFile);
-    api.uploadImage(imageFile)
+  _uploadImage(imageInfo) {
+    console.log('upload image-', imageInfo);
+    api.uploadImage(imageInfo)
       .then((response)=>{
         console.log(response);
       })
