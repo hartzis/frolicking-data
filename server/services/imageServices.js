@@ -2,14 +2,72 @@ let Frolicks = require('../models/frolicks');
 let multiparty = require('multiparty');
 let fs = require('fs');
 let moment = require('moment');
+let lwip = require('lwip');
+let imagesConfig = require('../imagesConfig');
+
+
+
+function copyImageToNewFormat(imagePath, newImageFormat, newImageExt, descriptor) {
+  
+  // i realize this isn't good
+  // need to find better way to edit/split/create paths
+  let [,imagePathNoExt,] = imagePath.split('.');
+  imagePathNoExt = '.' + imagePathNoExt;
+  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + newImageExt;
+
+  return new Promise((resolve)=>{
+    lwip.open(imagePath, (err, image)=>{
+      image.batch().writeFile(newImagePath, newImageFormat, (err)=>{
+        if (err) throw err;
+        resolve();
+      });
+    })
+  })
+}
+
+function cropAndCreateNewImage(width, height, imagePath, descriptor) {
+
+  let [,imagePathNoExt, ext] = imagePath.split('.');
+  imagePathNoExt = '.' + imagePathNoExt;
+  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + ext;
+
+  return new Promise((resolve)=>{
+    lwip.open(imagePath, (err, image)=>{
+      image.batch()
+        .cover(width, height)
+        .writeFile(newImagePath, (err)=>{
+          if (err) throw err;
+          resolve();
+        });
+    })
+  })
+}
+
+function resizeAndCreateNewImage(width, height, imagePath, descriptor) {
+
+  let [,imagePathNoExt, ext] = imagePath.split('.');
+  imagePathNoExt = '.' + imagePathNoExt;
+  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + ext;
+
+  return new Promise((resolve)=>{
+    lwip.open(imagePath, (err, image)=>{
+      image.batch()
+        .resize(width, height)
+        .writeFile(newImagePath, (err)=>{
+          if (err) throw err;
+          resolve();
+        });
+    })
+  })
+}
 
 function createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath) {
   return new Promise((resolve)=>{
-    Frolicks.create(newFrolickData, (err, newFrolick) => {
-      fs.readFile(tmpPath, (err, data) => {
+    Frolicks.create(newFrolickData, (err, newFrolick)=>{
+      fs.readFile(tmpPath, (err, data)=>{
         if (err) throw err;
-        fs.writeFile(newPath, data, (err) => {
-          fs.unlink(tmpPath, () => {
+        fs.writeFile(newPath, data, (err)=>{
+          fs.unlink(tmpPath, ()=>{
             if(err) throw err;
             resolve();
           });
@@ -22,7 +80,7 @@ function createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath) {
 function saveImage(req, res) {
   let form = new multiparty.Form();
 
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, (err, fields, files)=>{
     let imageFile = files.imageFile[0];
     let imageTitle = fields.imageTitle[0];
     let imageDate = fields.imageDate[0];
@@ -42,8 +100,12 @@ function saveImage(req, res) {
 
     createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
       .then(()=>{
-        res.send('it worked');
+        copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, imagesConfig.TheNewImageExt, 'orig')
+          .then(()=>{
+            res.send('it worked');
+          })
       })
+      .catch((error)=>console.log('error processing-', error))
 
   })
 }

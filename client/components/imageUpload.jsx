@@ -63,7 +63,7 @@ class ImageUpload extends Component {
   }
 
   render() {
-
+    let {isSubmitting} = this.props;
     let {imagePreviewUrl, imageDate, imageTitle, allowSubmit} = this.state;
     let $imagePreview = null;
     if (imagePreviewUrl) {
@@ -76,7 +76,7 @@ class ImageUpload extends Component {
           <input type="file" onChange={this._handleImageChange} />
           <DatePicker onChange={this._handleDateChange} selected={imageDate} />
           <input type="text" onChange={this._handleTitleChange} value={imageTitle} />
-          <button type="submit" disabled={!allowSubmit}>Upload Image</button>
+          <button type="submit" disabled={!allowSubmit || isSubmitting}>Upload Image</button>
         </form>
         {$imagePreview}
       </div>

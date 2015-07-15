@@ -7,8 +7,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      app: Immutable.Map()
+      app: Immutable.Map(),
+      isSubmitting: false
     };
+    this._uploadImage = this._uploadImage.bind(this);
+    this._setSubmitting = this._setSubmitting.bind(this);
   }
 
   componentDidMount() {
@@ -22,10 +25,16 @@ class App extends React.Component {
 
   _uploadImage(imageInfo) {
     console.log('upload image-', imageInfo);
+    this._setSubmitting(true);
     api.uploadImage(imageInfo)
       .then((response)=>{
         console.log(response);
+        this._setSubmitting(false);
       })
+  }
+
+  _setSubmitting(update) {
+    this.setState({isSubmitting: update});
   }
 
   render() {
@@ -38,7 +47,7 @@ class App extends React.Component {
       <div>
         Hello App
         {$frolicks}
-        <a href="/upload">Upload new Image</a>
+        <hr/>
         <ImageUpload onUploadImage={this._uploadImage} />
       </div>
     )
