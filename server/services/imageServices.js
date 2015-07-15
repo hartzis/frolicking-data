@@ -3,6 +3,22 @@ let multiparty = require('multiparty');
 let fs = require('fs');
 let moment = require('moment');
 
+function createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath) {
+  return new Promise((resolve)=>{
+    Frolicks.create(newFrolickData, (err, newFrolick) => {
+      fs.readFile(tmpPath, (err, data) => {
+        if (err) throw err;
+        fs.writeFile(newPath, data, (err) => {
+          fs.unlink(tmpPath, () => {
+            if(err) throw err;
+            resolve();
+          });
+        }); 
+      });
+    })
+  })
+}
+
 function saveImage(req, res) {
   let form = new multiparty.Form();
 
@@ -24,20 +40,10 @@ function saveImage(req, res) {
       date: new Date(moment(imageDate).format())
     }
 
-    Frolicks.create(newFrolickData, (err, newFrolick) => {
-      console.log(newFrolick);
-    })
-
-    fs.readFile(tmpPath, (err, data) => {
-      if (err) throw err;
-      fs.writeFile(newPath, data, (err) => {
-        fs.unlink(tmpPath, () => {
-          if(err) throw err;
-          res.send("File uploaded to: " + newPath);
-        });
-      }); 
-    }); 
-
+    createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
+      .then(()=>{
+        res.send('it worked');
+      })
 
   })
 }
