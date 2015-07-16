@@ -86,7 +86,8 @@ class ImageUpload extends Component {
 }
 
 ImageUpload.propTypes = {
-  onUploadImage: PropTypes.func
+  onUploadImage: PropTypes.func,
+  isSubmitting: PropTypes.bool
 }
 
 module.exports = ImageUpload;

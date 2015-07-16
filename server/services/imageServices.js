@@ -2,30 +2,39 @@ let Frolicks = require('../models/frolicks');
 let multiparty = require('multiparty');
 let fs = require('fs');
 let moment = require('moment');
+
+let promiseSeries = require('../utils/promise-series');
+
 let lwip = require('lwip');
 let imagesConfig = require('../imagesConfig');
+let {ImageSizes} = imagesConfig;
 
-
+function getBasePathBaseFileNameExt(fullImagePath) {
+  let splitPath = fullImagePath.split('/');
+  let fileWithExt = splitPath.pop();
+  let basePath = splitPath.join('/');
+  console.log(splitPath, fileWithExt, basePath);
+  let [filename, extension] = fileWithExt.split('.');
+  let [basefilename,] = filename.split('-');
+  return {basePath, basefilename, extension}
+}
 
 function copyImageToNewFormat(imagePath, newImageFormat, newImageExt, descriptor) {
-  
-  // i realize this isn't good
-  // need to find better way to edit/split/create paths
-  let [,imagePathNoExt,] = imagePath.split('.');
-  imagePathNoExt = '.' + imagePathNoExt;
-  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + newImageExt;
+
+  let {basePath, basefilename} = getBasePathBaseFileNameExt(imagePath);
+  let newImagePath = basePath + '/' + descriptor + '/' + basefilename + '-' + descriptor + '.' + newImageExt;
 
   return new Promise((resolve)=>{
     lwip.open(imagePath, (err, image)=>{
       image.batch().writeFile(newImagePath, newImageFormat, (err)=>{
         if (err) throw err;
-        resolve();
+        resolve(newImagePath);
       });
     })
   })
 }
 
-function cropAndCreateNewImage(width, height, imagePath, descriptor) {
+function coverNewImage(width, height, imagePath, descriptor) {
 
   let [,imagePathNoExt, ext] = imagePath.split('.');
   imagePathNoExt = '.' + imagePathNoExt;
@@ -37,13 +46,13 @@ function cropAndCreateNewImage(width, height, imagePath, descriptor) {
         .cover(width, height)
         .writeFile(newImagePath, (err)=>{
           if (err) throw err;
-          resolve();
+          resolve(newImagePath);
         });
     })
   })
 }
 
-function resizeAndCreateNewImage(width, height, imagePath, descriptor) {
+function resizeNewImage(width, height, imagePath, descriptor) {
 
   let [,imagePathNoExt, ext] = imagePath.split('.');
   imagePathNoExt = '.' + imagePathNoExt;
@@ -55,7 +64,7 @@ function resizeAndCreateNewImage(width, height, imagePath, descriptor) {
         .resize(width, height)
         .writeFile(newImagePath, (err)=>{
           if (err) throw err;
-          resolve();
+          resolve(newImagePath);
         });
     })
   })
@@ -101,15 +110,36 @@ function saveImage(req, res) {
     createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
       .then(()=>{
         copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, imagesConfig.TheNewImageExt, 'orig')
-          .then(()=>{
-            res.send('it worked');
+          .then((origImagePath)=>{
+            
+            let med = ImageSizes.medium;
+            let mediumImage = coverNewImage(med.width, med.height, origImagePath, 'medium');
+            let small = ImageSizes.small;
+            let smallImage = coverNewImage(small.width, small.height, origImagePath, 'small');
+
+            promiseSeries([mediumImage, smallImage])
+              .then((newImagePaths)=>{
+                console.log('newImagePaths-', newImagePaths);
+                let thumb = ImageSizes.thumbnail;
+                resizeNewImage(thumb.width, thumb.width, newImagePaths[0], 'thumbnail')
+                  .then(()=>{
+                    res.send('it worked');        
+                  })
+                  .catch(logError)
+              })
+              .catch(logError)
+
           })
+          .catch(logError)
       })
-      .catch((error)=>console.log('error processing-', error))
+      .catch(logError)
 
   })
 }
 
+function logError(error) {
+  return console.log('error processing-', error);
+}
 
 module.exports = {
   saveImage

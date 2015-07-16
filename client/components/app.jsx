@@ -48,7 +48,7 @@ class App extends React.Component {
         Hello App
         {$frolicks}
         <hr/>
-        <ImageUpload onUploadImage={this._uploadImage} />
+        <ImageUpload onUploadImage={this._uploadImage} isSubmitting={this.state.isSubmitting} />
       </div>
     )
   }
