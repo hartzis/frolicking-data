@@ -19,10 +19,11 @@ function getBasePathBaseFileNameExt(fullImagePath) {
   return {basePath, basefilename, extension}
 }
 
-function copyImageToNewFormat(imagePath, newImageFormat, newImageExt, descriptor) {
+function getImagePathWithDescExt(basePath, basefilename, descriptor, extension) {
+  return basePath + '/' + descriptor + '/' + basefilename + '-' + descriptor + '.' + extension;
+}
 
-  let {basePath, basefilename} = getBasePathBaseFileNameExt(imagePath);
-  let newImagePath = basePath + '/' + descriptor + '/' + basefilename + '-' + descriptor + '.' + newImageExt;
+function copyImageToNewFormat(imagePath, newImageFormat, newImagePath) {
 
   return new Promise((resolve)=>{
     lwip.open(imagePath, (err, image)=>{
@@ -109,7 +110,11 @@ function saveImage(req, res) {
 
     createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
       .then(()=>{
-        copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, imagesConfig.TheNewImageExt, 'orig')
+
+        let {basePath: origBasePath, basefilename: origBaseFilename} = getBasePathBaseFileNameExt(newPath);
+        let newOrigImagePath = getImagePathWithDescExt(origBasePath, origBaseFilename, 'orig', imagesConfig.TheNewImageExt);
+
+        copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, newOrigImagePath)
           .then((origImagePath)=>{
             
             let med = ImageSizes.medium;
