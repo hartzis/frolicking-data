@@ -1,6 +1,6 @@
 {
   "verbose": true,
-  "ignore": ["images/*"],
+  "ignore": ["images/*", "node_modules/*"],
   "execMap": {
     "js": "iojs"
   }
