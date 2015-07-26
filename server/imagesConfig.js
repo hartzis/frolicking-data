@@ -1,15 +1,23 @@
 let ImageSizes = {
   thumbnail: {
-    width: 75,
-    height: 75
+    width: 100,
+    height: 75,
+    name: 'thumbnail'
   },
   small: {
-    width: 180,
-    height: 240
+    width: 240,
+    height: 180,
+    name: 'small'
   },
   medium: {
-    width: 375,
-    height: 500
+    width: 500,
+    height: 375,
+    name: 'medium'
+  },
+  large: {
+    width: 1024,
+    height: 768,
+    name: 'large'
   }
 }
 

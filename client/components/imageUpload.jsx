@@ -67,7 +67,7 @@ class ImageUpload extends Component {
     let {imagePreviewUrl, imageDate, imageTitle, allowSubmit} = this.state;
     let $imagePreview = null;
     if (imagePreviewUrl) {
-      $imagePreview = (<img src={imagePreviewUrl} />);
+      $imagePreview = (<img src={imagePreviewUrl} style={{'maxWidth':'500px', 'maxHeight':'375px'}} />);
     }
 
     return (

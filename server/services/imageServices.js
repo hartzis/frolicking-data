@@ -9,9 +9,10 @@ let lwip = require('lwip');
 let imagesConfig = require('../imagesConfig');
 let {ImageSizes} = imagesConfig;
 
-function getBasePathBaseFileNameExt(fullImagePath) {
+function getBasePathBaseFileNameExt(fullImagePath, hasDescriptor) {
   let splitPath = fullImagePath.split('/');
   let fileWithExt = splitPath.pop();
+  if (hasDescriptor) splitPath.pop();
   let basePath = splitPath.join('/');
   console.log(splitPath, fileWithExt, basePath);
   let [filename, extension] = fileWithExt.split('.');
@@ -35,37 +36,29 @@ function copyImageToNewFormat(imagePath, newImageFormat, newImagePath) {
   })
 }
 
-function coverNewImage(width, height, imagePath, descriptor) {
-
-  let [,imagePathNoExt, ext] = imagePath.split('.');
-  imagePathNoExt = '.' + imagePathNoExt;
-  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + ext;
+function coverNewImage(width, height, srcImagePath, destImagePath) {
 
   return new Promise((resolve)=>{
-    lwip.open(imagePath, (err, image)=>{
+    lwip.open(srcImagePath, (err, image)=>{
       image.batch()
         .cover(width, height)
-        .writeFile(newImagePath, (err)=>{
+        .writeFile(destImagePath, (err)=>{
           if (err) throw err;
-          resolve(newImagePath);
+          resolve(destImagePath);
         });
     })
   })
 }
 
-function resizeNewImage(width, height, imagePath, descriptor) {
-
-  let [,imagePathNoExt, ext] = imagePath.split('.');
-  imagePathNoExt = '.' + imagePathNoExt;
-  let newImagePath = imagePathNoExt + '-' + descriptor + '.' + ext;
+function resizeNewImage(width, height, srcImagePath, destImagePath) {
 
   return new Promise((resolve)=>{
-    lwip.open(imagePath, (err, image)=>{
+    lwip.open(srcImagePath, (err, image)=>{
       image.batch()
         .resize(width, height)
-        .writeFile(newImagePath, (err)=>{
+        .writeFile(destImagePath, (err)=>{
           if (err) throw err;
-          resolve(newImagePath);
+          resolve(destImagePath);
         });
     })
   })
@@ -100,7 +93,7 @@ function saveImage(req, res) {
 
     let newFileName = imageDate.replace(/-/g, '') + imageTitle.replace(/ /g, '') + '.' + origExt;
 
-    let newPath = "./images/" + newFileName;
+    let newPath = "./images/main/" + newFileName;
 
     let newFrolickData = {
       filename: newFileName,
@@ -111,22 +104,38 @@ function saveImage(req, res) {
     createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
       .then(()=>{
 
-        let {basePath: origBasePath, basefilename: origBaseFilename} = getBasePathBaseFileNameExt(newPath);
+        let {basePath: origBasePath, basefilename: origBaseFilename} = getBasePathBaseFileNameExt(newPath, true);
         let newOrigImagePath = getImagePathWithDescExt(origBasePath, origBaseFilename, 'orig', imagesConfig.TheNewImageExt);
 
         copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, newOrigImagePath)
-          .then((origImagePath)=>{
+          .then((newSavedOrigImagePath)=>{
             
+            let large = ImageSizes.large;
             let med = ImageSizes.medium;
-            let mediumImage = coverNewImage(med.width, med.height, origImagePath, 'medium');
             let small = ImageSizes.small;
-            let smallImage = coverNewImage(small.width, small.height, origImagePath, 'small');
+            
+            // setup medium and small image output paths
+            let {basePath: newSavedOrigBasePath, basefilename: newSavedOrigBaseFilename} = getBasePathBaseFileNameExt(newSavedOrigImagePath, true);
+            let largeImagePath = getImagePathWithDescExt(newSavedOrigBasePath, newSavedOrigBaseFilename, large.name, imagesConfig.TheNewImageExt);
+            let mediumImagePath = getImagePathWithDescExt(newSavedOrigBasePath, newSavedOrigBaseFilename, med.name, imagesConfig.TheNewImageExt);
+            let smallImagePath = getImagePathWithDescExt(newSavedOrigBasePath, newSavedOrigBaseFilename, small.name, imagesConfig.TheNewImageExt);
 
-            promiseSeries([mediumImage, smallImage])
+            // Create large, medium and small images
+            let largeImage = coverNewImage(large.width, large.height, newSavedOrigImagePath, largeImagePath);
+            let mediumImage = coverNewImage(med.width, med.height, newSavedOrigImagePath, mediumImagePath);
+            let smallImage = coverNewImage(small.width, small.height, newSavedOrigImagePath, smallImagePath);
+
+            promiseSeries([largeImage, mediumImage, smallImage])
               .then((newImagePaths)=>{
-                console.log('newImagePaths-', newImagePaths);
+                console.log('largeMedSmallImagePaths-', newImagePaths);
+                let makeThumbFromThisImage = newImagePaths[1];
                 let thumb = ImageSizes.thumbnail;
-                resizeNewImage(thumb.width, thumb.width, newImagePaths[0], 'thumbnail')
+                
+                let {basePath: newSavedSrcBasePath, basefilename: newSavedSrcBaseFilename} = getBasePathBaseFileNameExt(makeThumbFromThisImage, true);
+                let thumbImagePath = getImagePathWithDescExt(newSavedSrcBasePath, newSavedSrcBaseFilename, thumb.name, imagesConfig.TheNewImageExt);
+
+                // Create thumbnail from medium sized image
+                resizeNewImage(thumb.width, thumb.height, makeThumbFromThisImage, thumbImagePath)
                   .then(()=>{
                     res.send('it worked');        
                   })
