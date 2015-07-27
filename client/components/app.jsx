@@ -7,7 +7,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      app: Immutable.Map(),
+      app: Immutable.fromJS({
+        frolicks: [],
+        selected: {}
+      }),
       isSubmitting: false
     };
     this._uploadImage = this._uploadImage.bind(this);
@@ -15,6 +18,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    window.daApp = this;
     api.getAll()
       .then((data) => {
         this.setState({
@@ -28,8 +32,12 @@ class App extends React.Component {
     this._setSubmitting(true);
     api.uploadImage(imageInfo)
       .then((response)=>{
-        console.log(response);
-        this._setSubmitting(false);
+        this.setState({
+          app: Immutable.Map({
+            frolicks: Immutable.fromJS(response.allFrolicks),
+            selected: Immutable.fromJS(response.savedFrolick)
+          })
+        }, ()=>this._setSubmitting(false))
       })
   }
 
@@ -41,7 +49,7 @@ class App extends React.Component {
     let frolicks = this.state.app.get('frolicks');
     let $frolicks = null;
     if (frolicks) {
-      $frolicks = frolicks.map(frolick=>(<div key={frolick.get('id')}>{frolick.get('name')}</div>))
+      $frolicks = frolicks.map(frolick=>(<div key={frolick.get('_id')}>{frolick.get('filename')}</div>))
     }
     return (
       <div>

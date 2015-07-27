@@ -15,7 +15,9 @@ module.exports = {
 
   // get all the frolicks
   getAll(req, res) {
-    res.send(currentFrolicks);
+    Frolicks.find((err, allFrolicks)=>{
+      res.send(allFrolicks);
+    })
   },
 
 }

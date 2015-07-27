@@ -50,7 +50,7 @@ let api = {
       xhr.onload = function () {
         if (this.status == 200) {
           // Performs the function "resolve" when this.status is equal to 200
-          resolve(this.response);
+          resolve(JSON.parse(this.response));
         } else {
           // Performs the function "reject" when this.status is different than 200
           reject(this.statusText);

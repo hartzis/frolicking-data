@@ -72,7 +72,7 @@ function createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath) {
         fs.writeFile(newPath, data, (err)=>{
           fs.unlink(tmpPath, ()=>{
             if(err) throw err;
-            resolve();
+            resolve(newFrolick);
           });
         }); 
       });
@@ -102,7 +102,13 @@ function saveImage(req, res) {
     }
 
     createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath)
-      .then(()=>{
+      .then((newFrolickData)=>{
+
+        let getAllFrolicks = new Promise((resolve)=>{
+          Frolicks.find((err, allFrolicks)=>{
+            resolve(allFrolicks);
+          });
+        });
 
         let {basePath: origBasePath, basefilename: origBaseFilename} = getBasePathBaseFileNameExt(newPath, true);
         let newOrigImagePath = getImagePathWithDescExt(origBasePath, origBaseFilename, 'orig', imagesConfig.TheNewImageExt);
@@ -137,7 +143,12 @@ function saveImage(req, res) {
                 // Create thumbnail from medium sized image
                 resizeNewImage(thumb.width, thumb.height, makeThumbFromThisImage, thumbImagePath)
                   .then(()=>{
-                    res.send('it worked');        
+
+                    // send back all frolicks, and the most recently saved one
+                    getAllFrolicks.then((allFrolicks)=>{
+                      res.send({allFrolicks, savedFrolick: newFrolickData});
+                    })
+                    
                   })
                   .catch(logError)
               })
