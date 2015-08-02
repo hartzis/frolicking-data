@@ -2,8 +2,8 @@
 Image metadata manager, manage tags, geolocation, notes and more. Also create different sized images.
 
 - [ ] Add new image
-  - [ ] Upload image
-    - [ ] Create new images of specific sizes for web app
+  - [X] Upload image
+    - [X] Create new images of specific sizes for web app
   - [ ] Manage metadata
     - [ ] Add Tags and Info like title
     - [ ] Add geolocation: Lat/Long
