@@ -1,7 +1,9 @@
 let React = require('react');
 let Immutable = require('immutable');
 let api = require('../services/apiService');
-let ImageUpload = require('./imageUpload.jsx');
+let ImageUploadView = require('./imageUploadView.jsx');
+let ImageListView = require('./imageListView.jsx');
+let EditImageView = require('./editImageView.jsx');
 
 class App extends React.Component {
   constructor(props) {
@@ -47,16 +49,11 @@ class App extends React.Component {
 
   render() {
     let frolicks = this.state.app.get('frolicks');
-    let $frolicks = null;
-    if (frolicks) {
-      $frolicks = frolicks.map(frolick=>(<div key={frolick.get('_id')}>{frolick.get('filename')}</div>))
-    }
+
     return (
-      <div>
-        Hello App
-        {$frolicks}
-        <hr/>
-        <ImageUpload onUploadImage={this._uploadImage} isSubmitting={this.state.isSubmitting} />
+      <div className="theContainer">
+        <ImageListView frolicks={frolicks} />
+        <ImageUploadView onUploadImage={this._uploadImage} isSubmitting={this.state.isSubmitting} />
       </div>
     )
   }

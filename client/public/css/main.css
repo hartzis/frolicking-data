@@ -1,0 +1,16 @@
+.theContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.frolicksListContainer {
+  padding: 5px;
+  border: 2px solid gray;
+  display: flex;
+  flex-direction: column; 
+}
+
+.listedFrolick:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}

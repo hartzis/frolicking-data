@@ -4,7 +4,7 @@ let api = require('../services/apiService');
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
-class ImageUpload extends Component {
+class ImageUploadView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -75,7 +75,10 @@ class ImageUpload extends Component {
         <form onSubmit={this._handleSubmit}>
           <input type="file" onChange={this._handleImageChange} />
           <DatePicker onChange={this._handleDateChange} selected={imageDate} />
-          <input type="text" onChange={this._handleTitleChange} value={imageTitle} />
+          <div>
+            <label htmlFor="theImageTitle"> Image Title</label>
+            <input type="text" id="theImageTitle" onChange={this._handleTitleChange} value={imageTitle} />
+          </div>
           <button type="submit" disabled={!allowSubmit || isSubmitting}>Upload Image</button>
         </form>
         {$imagePreview}
@@ -85,9 +88,9 @@ class ImageUpload extends Component {
 
 }
 
-ImageUpload.propTypes = {
+ImageUploadView.propTypes = {
   onUploadImage: PropTypes.func,
   isSubmitting: PropTypes.bool
 }
 
-module.exports = ImageUpload;
+module.exports = ImageUploadView;
