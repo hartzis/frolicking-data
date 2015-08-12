@@ -29,18 +29,26 @@ class EditImageView extends Component {
     console.log('changed-', e);
   }
 
+  _renderImagePreviews(imageFilename) {
+    const imageSizes = ['large', 'medium', 'small', 'thumbnail'];
+    return imageSizes.map((size)=>{
+      return (<img src={size + '/' + imageFilename + '-' + size + '.jpg'} />);
+    })
+  }
+
   render() {
     let {isSubmitting} = this.props;
-    let $imagePreview = (<img src={imagePreviewUrl} style={{'maxWidth':'500px', 'maxHeight':'375px'}} />);
+    let {filename} = this.props.editingImage;
+    let $images = this._renderImagePreviews(filename);
 
     return (
       <div>
-        <form onChange={this._handleImageEdits} onSubmit={this._handleSubmitUpdate}>
+        {/*<form onChange={this._handleImageEdits} onSubmit={this._handleSubmitUpdate}>
           <DatePicker onChange={this._handleDateChange} selected={imageDate} />
           <input type="text" onChange={this._handleTitleChange} value={imageTitle} />
           <button type="submit" disabled={!allowSubmit || isSubmitting}>Update Image</button>
-        </form>
-        {$imagePreview}
+        </form>*/}
+        {$images}
       </div>
     )
   }

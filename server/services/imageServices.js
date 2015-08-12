@@ -91,12 +91,14 @@ function saveImage(req, res) {
     let tmpPath = imageFile.path;
     let [originalFilename, origExt] = imageFile.originalFilename.split('.');
 
-    let newFileName = imageDate.replace(/-/g, '') + imageTitle.replace(/ /g, '') + '.' + origExt;
+    let filenameNoExt = imageDate.replace(/-/g, '') + imageTitle.replace(/ /g, '');
+
+    let newFileName = filenameNoExt + '.' + origExt;
 
     let newPath = "./images/main/" + newFileName;
 
     let newFrolickData = {
-      filename: newFileName,
+      filename: filenameNoExt,
       title: imageTitle,
       date: new Date(moment(imageDate).format())
     }

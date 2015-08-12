@@ -11,12 +11,13 @@ class App extends React.Component {
     this.state = {
       app: Immutable.fromJS({
         frolicks: [],
-        selected: {}
+        editingImage: null,
+        isSubmitting: false
       }),
-      isSubmitting: false
     };
     this._uploadImage = this._uploadImage.bind(this);
     this._setSubmitting = this._setSubmitting.bind(this);
+    this._selectEditImage = this._selectEditImage.bind(this);
   }
 
   componentDidMount() {
@@ -37,23 +38,40 @@ class App extends React.Component {
         this.setState({
           app: Immutable.Map({
             frolicks: Immutable.fromJS(response.allFrolicks),
-            selected: Immutable.fromJS(response.savedFrolick)
+            editingImage: Immutable.fromJS(response.savedFrolick)
           })
         }, ()=>this._setSubmitting(false))
       })
   }
 
   _setSubmitting(update) {
-    this.setState({isSubmitting: update});
+    this.setState({
+      app: this.state.app.set('isSubmitting', update)
+    });
+  }
+
+  _selectEditImage(imageToEdit) {
+    this.setState({
+      app: this.state.app.set('editingImage', imageToEdit)
+    })
   }
 
   render() {
     let frolicks = this.state.app.get('frolicks');
+    let editingImage = this.state.app.get('editingImage');
+    let isSubmitting = this.state.app.get('isSubmitting');
+
+    let $editOrNewImage = null;
+    if (editingImage) {
+      $editOrNewImage = (<EditImageView editingImage={editingImage.toJS()} isSubmitting={isSubmitting} />);
+    } else {
+      $editOrNewImage = (<ImageUploadView onUploadImage={this._uploadImage} isSubmitting={isSubmitting} />);
+    }
 
     return (
       <div className="theContainer">
-        <ImageListView frolicks={frolicks} />
-        <ImageUploadView onUploadImage={this._uploadImage} isSubmitting={this.state.isSubmitting} />
+        <ImageListView frolicks={frolicks} onSelectImageToEdit={this._selectEditImage} isSubmitting={isSubmitting} />
+        {$editOrNewImage}
       </div>
     )
   }
