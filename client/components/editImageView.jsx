@@ -32,7 +32,7 @@ class EditImageView extends Component {
   _renderImagePreviews(imageFilename) {
     const imageSizes = ['large', 'medium', 'small', 'thumbnail'];
     return imageSizes.map((size)=>{
-      return (<img src={size + '/' + imageFilename + '-' + size + '.jpg'} />);
+      return (<img key={size} src={'/images/' + size + '/' + imageFilename + '-' + size + '.jpg'} />);
     })
   }
 
@@ -43,6 +43,7 @@ class EditImageView extends Component {
 
     return (
       <div>
+        <h3>{filename}</h3>
         {/*<form onChange={this._handleImageEdits} onSubmit={this._handleSubmitUpdate}>
           <DatePicker onChange={this._handleDateChange} selected={imageDate} />
           <input type="text" onChange={this._handleTitleChange} value={imageTitle} />

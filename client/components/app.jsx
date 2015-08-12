@@ -18,6 +18,7 @@ class App extends React.Component {
     this._uploadImage = this._uploadImage.bind(this);
     this._setSubmitting = this._setSubmitting.bind(this);
     this._selectEditImage = this._selectEditImage.bind(this);
+    this._addNewImage = this._addNewImage.bind(this);
   }
 
   componentDidMount() {
@@ -56,21 +57,29 @@ class App extends React.Component {
     })
   }
 
+  _addNewImage() {
+   this.setState({
+      app: this.state.app.set('editingImage', null)
+    }) 
+  }
+
   render() {
     let frolicks = this.state.app.get('frolicks');
     let editingImage = this.state.app.get('editingImage');
+    let selectedId = null;
     let isSubmitting = this.state.app.get('isSubmitting');
 
     let $editOrNewImage = null;
     if (editingImage) {
       $editOrNewImage = (<EditImageView editingImage={editingImage.toJS()} isSubmitting={isSubmitting} />);
+      selectedId = editingImage.get('_id');
     } else {
       $editOrNewImage = (<ImageUploadView onUploadImage={this._uploadImage} isSubmitting={isSubmitting} />);
     }
 
     return (
       <div className="theContainer">
-        <ImageListView frolicks={frolicks} onSelectImageToEdit={this._selectEditImage} isSubmitting={isSubmitting} />
+        <ImageListView frolicks={frolicks} onAddNewImage={this._addNewImage} onSelectImageToEdit={this._selectEditImage} isSubmitting={isSubmitting} selectedId={selectedId} />
         {$editOrNewImage}
       </div>
     )

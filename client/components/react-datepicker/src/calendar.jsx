@@ -4,7 +4,7 @@ var DateUtil = require('./util/date');
 var _ = require('lodash');
 
 var Calendar = React.createClass({
-  mixins: [require('react-onclickoutside')],
+  mixins: [require('../../react-onclickoutside')],
 
   handleClickOutside: function() {
     this.props.hideCalendar();

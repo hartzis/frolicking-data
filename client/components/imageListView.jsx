@@ -14,13 +14,22 @@ class ImageListView extends React.Component {
   }
 
   render() {
-    let {frolicks} = this.props;
+    let {frolicks, selectedId} = this.props;
     let $frolicks = null;
     if (frolicks) {
-      $frolicks = frolicks.map(frolick=>(<div className="listedFrolick" key={frolick.get('_id')} onClick={()=>this._selectImageToEdit(frolick)}>{frolick.get('filename')}</div>))
+      $frolicks = frolicks.map(frolick=>{
+        let isSelected = frolick.get('_id') === selectedId;
+        return (
+          <div className="listedFrolick" key={frolick.get('_id')} onClick={()=>this._selectImageToEdit(frolick)} style={{'borderBottom': isSelected ? 'solid 1px gray' : '', 'borderTop': isSelected ? 'solid 1px gray' : ''}}>
+            {frolick.get('filename')}
+            {isSelected ? (<span>&raquo;</span>) : null}
+          </div>
+        )
+      })
     }
     return (
       <div className="frolicksListContainer">
+        <button onClick={this.props.onAddNewImage}> Add new image </button>
         {$frolicks}
       </div>
     )
