@@ -8,7 +8,6 @@ class ImageListView extends React.Component {
 
   _selectImageToEdit(image) {
     if (!this.props.isSubmitting) {
-      console.log('editImage-', image);
       this.props.onSelectImageToEdit(image);
     }
   }
