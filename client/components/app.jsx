@@ -60,7 +60,7 @@ class App extends React.Component {
   _addNewImage() {
    this.setState({
       app: this.state.app.set('editingImage', null)
-    }) 
+    })
   }
 
   render() {

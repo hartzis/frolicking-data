@@ -61,6 +61,18 @@ var Calendar = React.createClass({
     });
   },
 
+  increaseYear: function() {
+    this.setState({
+      date: this.state.date.addYear()
+    });
+  },
+
+  decreaseYear: function() {
+    this.setState({
+      date: this.state.date.subtractYear()
+    });
+  },
+
   weeks: function() {
     return this.state.date.mapWeeksInMonth(this.renderWeek);
   },
@@ -122,6 +134,14 @@ var Calendar = React.createClass({
       <div className="datepicker">
         <div className="datepicker__triangle"></div>
         <div className="datepicker__header">
+          <div>
+            <a className=""
+                onClick={this.decreaseYear}>&laquo;
+            </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a className=""
+                onClick={this.increaseYear}>&raquo;
+            </a>
+          </div>
           <a className="datepicker__navigation datepicker__navigation--previous"
               onClick={this.decreaseMonth}>
           </a>
@@ -131,6 +151,7 @@ var Calendar = React.createClass({
           <a className="datepicker__navigation datepicker__navigation--next"
               onClick={this.increaseMonth}>
           </a>
+
           <div>
             {this.header()}
           </div>

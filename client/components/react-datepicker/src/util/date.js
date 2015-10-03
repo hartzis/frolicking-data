@@ -74,6 +74,14 @@ DateUtil.prototype.subtractMonth = function() {
   return new DateUtil(this._date.clone().subtract(1, 'month'));
 };
 
+DateUtil.prototype.addYear = function() {
+  return new DateUtil(this._date.clone().add(1, 'year'));
+};
+
+DateUtil.prototype.subtractYear = function() {
+  return new DateUtil(this._date.clone().subtract(1, 'year'));
+};
+
 DateUtil.prototype.clone = function() {
   return new DateUtil(this._date.clone());
 };
