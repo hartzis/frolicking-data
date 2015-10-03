@@ -4,6 +4,9 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
+let shouldPureComponentUpdate = 'react-pure-render/function';
+let GoogleMap = 'google-map-react';
+
 class EditImageView extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +23,19 @@ class EditImageView extends Component {
   //     this.setState({allowSubmit: true});
   //   }
   // }
+
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+
+    );
+  }
+}
 
   _handleSubmitUpdate(e) {
     e.preventDefault();
@@ -73,7 +89,7 @@ class EditImageView extends Component {
           {/*<DatePicker onChange={this._handleDateChange} selected={imageDate} />
           <input type="text" onChange={this._handleTitleChange} value={imageTitle} />
           <button type="submit" disabled={!allowSubmit || isSubmitting}>Update Image</button>*/}
-        
+
           <div>
             <label htmlFor="editHasHat"> Has Hat?</label>
             <input id="editHasHat" name="editHasHat" type="checkbox" value={hasHat}/>
@@ -91,6 +107,10 @@ class EditImageView extends Component {
             <input id="editHasOtherPeople" name="editHasOtherPeople" type="checkbox" value={hasOtherPeople}/>
           </div>
         </form>
+        <GoogleMap
+         defaultCenter={this.props.center}
+         defaultZoom={this.props.zoom}>
+       </GoogleMap>
         {$images}
       </div>
     )
@@ -103,5 +123,11 @@ EditImageView.propTypes = {
   isSubmitting: PropTypes.bool,
   frolick: PropTypes.object
 }
+
+EditImageView.defaultProps = {
+  center: {lat: 59.938043, lng: 30.337157},
+  zoom: 9,
+  greatPlaceCoords: {lat: 59.724465, lng: 30.080121}
+};
 
 module.exports = EditImageView;
