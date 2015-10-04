@@ -4,16 +4,17 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
-let shouldPureComponentUpdate = 'react-pure-render/function';
-let GoogleMap = 'google-map-react';
+let GoogleMap = require('google-map-react');
 
 class EditImageView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editingImage: Immutable.fromJS(props.editingImage)
+      editingImage: Immutable.fromJS(props.editingImage),
+      editLoc: false
     };
     window.fuckingState = this.state;
+
     this._handleSubmitUpdate = this._handleSubmitUpdate.bind(this);
     this._handleImageEdits = this._handleImageEdits.bind(this);
   }
@@ -24,19 +25,6 @@ class EditImageView extends Component {
   //   }
   // }
 
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-
-    );
-  }
-}
-
   _handleSubmitUpdate(e) {
     e.preventDefault();
     console.log('update image-');
@@ -45,6 +33,14 @@ class EditImageView extends Component {
   _handleImageEdits(e) {
     e.preventDefault();
     console.log('changed-', e);
+  }
+
+  _editLocation() {
+    this.setState({editLoc: true});
+  }
+
+  _onSelectLocation(...args) {
+    console.log('loc?-', ..args);
   }
 
   _renderImagePreviews(imageFilename) {
@@ -59,7 +55,10 @@ class EditImageView extends Component {
     let {filename} = this.props.editingImage;
     let $images = this._renderImagePreviews(filename);
 
-    let {hasHat, heelClicked, hasOtherPeople, midAir} = this.state.editingImage.toJS();
+    const imageInfo = this.state.editingImage.toJS();
+
+    let {hasHat, heelClicked, hasOtherPeople, midAir} = imageInfo;
+    let {location:{lng, lat}} = imageInfo;
 
     // "otherPeople" : [ ],
     // "hasOtherPeople" : false,
@@ -70,7 +69,7 @@ class EditImageView extends Component {
     //   "country" : "",
     //   "state" : "",
     //   "city" : "",
-    //   "long" : "",
+    //   "lng" : "",
     //   "lat" : ""
     // },
     // "tags" : [ ],
@@ -106,11 +105,19 @@ class EditImageView extends Component {
             <label htmlFor="editHasOtherPeople">Other People?</label>
             <input id="editHasOtherPeople" name="editHasOtherPeople" type="checkbox" value={hasOtherPeople}/>
           </div>
+          <div>
+            <label htmlFor="latlong">Lat/Lng</label>
+            <input id="latlong" name="latlong" disabled={true} type="text" value={lat+', '+lng}/>
+            <button onClick={this._editLocation}>add/edit loc</button>
+          </div>
         </form>
-        <GoogleMap
-         defaultCenter={this.props.center}
-         defaultZoom={this.props.zoom}>
-       </GoogleMap>
+        <div style={{height: '400px'}}>
+          <GoogleMap
+           defaultCenter={this.props.center}
+           defaultZoom={this.props.zoom}
+           onMapClick={this._onSelectLocation} >
+         </GoogleMap>
+       </div>
         {$images}
       </div>
     )
@@ -125,9 +132,8 @@ EditImageView.propTypes = {
 }
 
 EditImageView.defaultProps = {
-  center: {lat: 59.938043, lng: 30.337157},
-  zoom: 9,
-  greatPlaceCoords: {lat: 59.724465, lng: 30.080121}
+  center: {lat: 0, lng: 0},
+  zoom: 2
 };
 
 module.exports = EditImageView;

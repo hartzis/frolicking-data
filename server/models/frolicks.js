@@ -12,7 +12,7 @@ let frolickSchema = new Schema({
   tags: [String],
   location: {
     lat: {type: String, default: ''},
-    long: {type: String, default: ''},
+    lng: {type: String, default: ''},
     city: {type: String, default: ''},
     state: {type: String, default: ''},
     country: {type: String, default: ''}
@@ -22,7 +22,7 @@ let frolickSchema = new Schema({
   hasHat: {type: Boolean, default: false},
   hasOtherPeople: {type: Boolean, default: false},
   otherPeople: [String]
-  
+
 
 });
 

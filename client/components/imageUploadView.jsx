@@ -74,7 +74,9 @@ class ImageUploadView extends Component {
       <div>
         <form onSubmit={this._handleSubmit}>
           <input type="file" onChange={this._handleImageChange} />
-          <DatePicker onChange={this._handleDateChange} selected={imageDate} />
+          <div>
+            Date:<DatePicker onChange={this._handleDateChange} selected={imageDate} />
+          </div>
           <div>
             <label htmlFor="theImageTitle"> Image Title</label>
             <input type="text" id="theImageTitle" onChange={this._handleTitleChange} value={imageTitle} />
