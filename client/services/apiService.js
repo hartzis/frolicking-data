@@ -22,6 +22,21 @@ let api = {
       .then(parseJSON);
   },
 
+  update(id, data) {
+    console.log('data-', data);
+
+    return fetch(`/api/frolicks/${id}`, {
+      method: 'put',
+      body: 'json=' + encodeURI(JSON.stringify(data)),
+      headers: {
+        // "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        'Content-type': 'application/x-www-form-urlencoded'
+      },
+    })
+      .then(checkStatus)
+      .then(()=>console.log('updated!!!'))
+  },
+
   uploadImage(imageInfo) {
     return new Promise((resolve, reject) => {
       let imageFormData = new FormData();
@@ -42,11 +57,11 @@ let api = {
       // })
       //   .then(checkStatus)
       //   .then(parseJSON)
-      
+
       var xhr = new XMLHttpRequest();
-      
+
       xhr.open('post', '/upload', true);
-      
+
       xhr.onload = function () {
         if (this.status == 200) {
           // Performs the function "resolve" when this.status is equal to 200
@@ -56,7 +71,7 @@ let api = {
           reject(this.statusText);
         }
       };
-      
+
       xhr.send(imageFormData);
 
     });

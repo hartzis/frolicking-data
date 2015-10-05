@@ -11,8 +11,8 @@ let frolickSchema = new Schema({
   story: {type: String, default: ''},
   tags: [String],
   location: {
-    lat: {type: String, default: ''},
-    lng: {type: String, default: ''},
+    lat: {type: Number, default: 0},
+    lng: {type: Number, default: 0},
     city: {type: String, default: ''},
     state: {type: String, default: ''},
     country: {type: String, default: ''}

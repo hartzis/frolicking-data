@@ -4,6 +4,8 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
+let api = require('../services/apiService');
+
 let {GoogleMap, Marker} = require('react-google-maps');
 
 class EditImageView extends Component {
@@ -17,13 +19,15 @@ class EditImageView extends Component {
 
     this._handleSubmitUpdate = this._handleSubmitUpdate.bind(this);
     this._handleImageEdits = this._handleImageEdits.bind(this);
+    this._onSelectLocation = this._onSelectLocation.bind(this);
+    this._editLocation = this._editLocation.bind(this);
+    this._save = this._save.bind(this);
   }
 
-  // _checkIfCanSubmit() {
-  //   if (this.state.imageTitle && this.state.imagePreviewUrl && this.state.imageDate != null) {
-  //     this.setState({allowSubmit: true});
-  //   }
-  // }
+  _save() {
+    let data = this.state.editingImage.toJS();
+    api.update(data._id, data);
+  }
 
   _handleSubmitUpdate(e) {
     e.preventDefault();
@@ -39,8 +43,17 @@ class EditImageView extends Component {
     this.setState({editLoc: true});
   }
 
-  _onSelectLocation(...args) {
-    console.log('loc?-', ...args);
+  _onSelectLocation(event) {
+    if (this.state.editLoc) {
+      let newState = this.state.editingImage.setIn(['location', 'lat'], event.latLng.H)
+        .setIn(['location', 'lng'], event.latLng.L);
+      console.log('new state-', newState.toJS());
+      this.setState({
+        editingImage: newState,
+        editLoc: false
+      });
+    }
+
   }
 
   _renderImagePreviews(imageFilename) {
@@ -81,7 +94,12 @@ class EditImageView extends Component {
 
     return (
       <div>
-        <h3>{filename}</h3>
+        <h3>
+          {filename}
+          <button onClick={this._save}>
+            Save Changes
+          </button>
+        </h3>
 
         <form onChange={this._handleImageEdits} onSubmit={this._handleSubmitUpdate}>
 
@@ -107,8 +125,9 @@ class EditImageView extends Component {
           </div>
           <div>
             <label htmlFor="latlong">Lat/Lng</label>
-            <input id="latlong" name="latlong" disabled={true} type="text" value={lat+', '+lng}/>
+            <input style={{width:"300px"}} id="latlong" name="latlong" disabled={true} type="text" value={lat+', '+lng}/>
             <button onClick={this._editLocation}>add/edit loc</button>
+            {this.state.editLoc ? (<span>*EDITING LOC*</span>) : null}
           </div>
         </form>
         <div style={{height: '400px'}}>
@@ -122,7 +141,7 @@ class EditImageView extends Component {
             defaultZoom={3}
             defaultCenter={{lat: 0, lng: 0}}
             onClick={this._onSelectLocation}>
-              {/* (lat && lng) ? <Marker {...marker} /> : null */}
+              { (typeof lat === 'number' && typeof lng === 'number') ? <Marker position={{lat, lng}} /> : null }
           </GoogleMap>
        </div>
         {$images}

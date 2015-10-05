@@ -1,6 +1,14 @@
 let router = require('express').Router();
 let frolickServices = require('../services/frolickServices');
 
+let bodyParser = require('body-parser');
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+// parse application/json
+router.use(urlencodedParser)
+
 // middleware to use for all requests
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods');
@@ -9,13 +17,8 @@ router.use((req, res, next) => {
   next();
 })
 
-router.get('/frolicks', frolickServices.getAll);
-
 // # frolicks
-// router.post '/frolicks', frolicks.create
-// router.get '/frolicks', frolicks.findAll
-// router.get '/frolicks/:frolickId', frolicks.find
-// router.put '/frolicks/:frolickId', frolicks.update
-// router.put '/frolicks/updateByName/:name', frolicks.updateByName
+router.get('/frolicks', frolickServices.getAll);
+router.put('/frolicks/:frolickId', frolickServices.update);
 
 module.exports = router;

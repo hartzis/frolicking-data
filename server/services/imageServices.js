@@ -74,7 +74,7 @@ function createFrolickandMoveAndRenameImage(newFrolickData, tmpPath, newPath) {
             if(err) throw err;
             resolve(newFrolick);
           });
-        }); 
+        });
       });
     })
   })
@@ -117,11 +117,11 @@ function saveImage(req, res) {
 
         copyImageToNewFormat(newPath, imagesConfig.TheNewImageFormat, newOrigImagePath)
           .then((newSavedOrigImagePath)=>{
-            
+
             let large = ImageSizes.large;
             let med = ImageSizes.medium;
             let small = ImageSizes.small;
-            
+
             // setup medium and small image output paths
             let {basePath: newSavedOrigBasePath, basefilename: newSavedOrigBaseFilename} = getBasePathBaseFileNameExt(newSavedOrigImagePath, true);
             let largeImagePath = getImagePathWithDescExt(newSavedOrigBasePath, newSavedOrigBaseFilename, large.name, imagesConfig.TheNewImageExt);
@@ -138,7 +138,7 @@ function saveImage(req, res) {
                 console.log('largeMedSmallImagePaths-', newImagePaths);
                 let makeThumbFromThisImage = newImagePaths[1];
                 let thumb = ImageSizes.thumbnail;
-                
+
                 let {basePath: newSavedSrcBasePath, basefilename: newSavedSrcBaseFilename} = getBasePathBaseFileNameExt(makeThumbFromThisImage, true);
                 let thumbImagePath = getImagePathWithDescExt(newSavedSrcBasePath, newSavedSrcBaseFilename, thumb.name, imagesConfig.TheNewImageExt);
 
@@ -150,7 +150,7 @@ function saveImage(req, res) {
                     getAllFrolicks.then((allFrolicks)=>{
                       res.send({allFrolicks, savedFrolick: newFrolickData});
                     })
-                    
+
                   })
                   .catch(logError)
               })
