@@ -4,7 +4,7 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
-let GoogleMap = require('google-map-react');
+let {GoogleMap, Marker} = require('react-google-maps');
 
 class EditImageView extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class EditImageView extends Component {
   }
 
   _onSelectLocation(...args) {
-    console.log('loc?-', ..args);
+    console.log('loc?-', ...args);
   }
 
   _renderImagePreviews(imageFilename) {
@@ -112,11 +112,18 @@ class EditImageView extends Component {
           </div>
         </form>
         <div style={{height: '400px'}}>
-          <GoogleMap
-           defaultCenter={this.props.center}
-           defaultZoom={this.props.zoom}
-           onMapClick={this._onSelectLocation} >
-         </GoogleMap>
+          <GoogleMap containerProps={{
+              ...this.props,
+              style: {
+                height: "100%",
+              },
+            }}
+            ref="map"
+            defaultZoom={3}
+            defaultCenter={{lat: 0, lng: 0}}
+            onClick={this._onSelectLocation}>
+              {/* (lat && lng) ? <Marker {...marker} /> : null */}
+          </GoogleMap>
        </div>
         {$images}
       </div>
@@ -129,11 +136,6 @@ EditImageView.propTypes = {
   onUpdateImage: PropTypes.func,
   isSubmitting: PropTypes.bool,
   frolick: PropTypes.object
-}
-
-EditImageView.defaultProps = {
-  center: {lat: 0, lng: 0},
-  zoom: 2
 };
 
 module.exports = EditImageView;

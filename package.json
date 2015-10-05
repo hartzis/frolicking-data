@@ -21,7 +21,6 @@
   "dependencies": {
     "babel": "^5.6.14",
     "express": "^4.12.4",
-    "google-map-react": "^0.6.1",
     "immutable": "^3.7.4",
     "jade": "^1.11.0",
     "lodash": "^3.10.0",
@@ -29,8 +28,8 @@
     "moment": "^2.10.3",
     "mongoose": "^4.0.7",
     "multiparty": "^4.1.2",
-    "react": "^0.14.0-rc1",
-    "react-dom": "^0.14.0-rc1",
+    "react": "^0.13.0",
+    "react-google-maps": "*",
     "tether": "^1.0.3"
   },
   "devDependencies": {
