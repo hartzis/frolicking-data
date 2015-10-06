@@ -27,11 +27,11 @@ let api = {
 
     return fetch(`/api/frolicks/${id}`, {
       method: 'put',
-      body: 'json=' + encodeURI(JSON.stringify(data)),
+      body: JSON.stringify(data),
       headers: {
-        // "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-        'Content-type': 'application/x-www-form-urlencoded'
-      },
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     })
       .then(checkStatus)
       .then(()=>console.log('updated!!!'))

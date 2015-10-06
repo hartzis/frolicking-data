@@ -20,7 +20,7 @@ module.exports = {
     })
   },
   update(req, res) {
-    let frolick = JSON.parse(req.body.json);
+    let frolick = req.body;
     console.log('updating-', frolick._id, 'with-', frolick);
     Frolicks.update({_id: frolick._id}, frolick, function(err){
       if(!err) {

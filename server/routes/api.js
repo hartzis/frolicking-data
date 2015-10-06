@@ -3,11 +3,8 @@ let frolickServices = require('../services/frolickServices');
 
 let bodyParser = require('body-parser');
 
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
 // parse application/json
-router.use(urlencodedParser)
+router.use(bodyParser.json());
 
 // middleware to use for all requests
 router.use((req, res, next) => {
