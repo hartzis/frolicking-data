@@ -33,8 +33,7 @@ let api = {
         'Content-Type': 'application/json'
       }
     })
-      .then(checkStatus)
-      .then(()=>console.log('updated!!!'))
+      .then(checkStatus);
   },
 
   uploadImage(imageInfo) {

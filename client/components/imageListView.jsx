@@ -19,7 +19,7 @@ class ImageListView extends React.Component {
       $frolicks = frolicks.map(frolick=>{
         let isSelected = frolick.get('_id') === selectedId;
         return (
-          <div className="listedFrolick" key={frolick.get('_id')} onClick={()=>this._selectImageToEdit(frolick)} style={{'borderBottom': isSelected ? 'solid 1px gray' : '', 'borderTop': isSelected ? 'solid 1px gray' : ''}}>
+          <div className="listedFrolick" key={frolick.get('_id')} onClick={()=>this._selectImageToEdit(frolick.get('_id'))} style={{'borderBottom': isSelected ? 'solid 1px gray' : '', 'borderTop': isSelected ? 'solid 1px gray' : ''}}>
             {frolick.get('filename')}
             {isSelected ? (<span>&raquo;</span>) : null}
           </div>

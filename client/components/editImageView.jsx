@@ -4,8 +4,6 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
-let api = require('../services/apiService');
-
 let {GoogleMap, Marker} = require('react-google-maps');
 
 class EditImageView extends Component {
@@ -26,7 +24,7 @@ class EditImageView extends Component {
 
   _save() {
     let data = this.state.editingImage.toJS();
-    api.update(data._id, data);
+    this.props.onUpdateImageInfo(data);
   }
 
   _handleSubmitUpdate(e) {
@@ -45,8 +43,8 @@ class EditImageView extends Component {
 
   _onSelectLocation(event) {
     if (this.state.editLoc) {
-      let newState = this.state.editingImage.setIn(['location', 'lat'], event.latLng.H)
-        .setIn(['location', 'lng'], event.latLng.L);
+      let newState = this.state.editingImage.setIn(['location', 'lat'], event.latLng.lat())
+        .setIn(['location', 'lng'], event.latLng.lng());
       console.log('new state-', newState.toJS());
       this.setState({
         editingImage: newState,

@@ -11,7 +11,7 @@ class App extends React.Component {
     this.state = {
       app: Immutable.fromJS({
         frolicks: [],
-        editingImage: null,
+        editingImageId: null,
         isSubmitting: false
       }),
     };
@@ -19,6 +19,7 @@ class App extends React.Component {
     this._setSubmitting = this._setSubmitting.bind(this);
     this._selectEditImage = this._selectEditImage.bind(this);
     this._addNewImage = this._addNewImage.bind(this);
+    this._updateImageInfo = this._updateImageInfo.bind(this);
   }
 
   componentDidMount() {
@@ -51,9 +52,9 @@ class App extends React.Component {
     });
   }
 
-  _selectEditImage(imageToEdit) {
+  _selectEditImage(imageToEditId) {
     this.setState({
-      app: this.state.app.set('editingImage', imageToEdit)
+      app: this.state.app.set('editingImageId', imageToEditId)
     })
   }
 
@@ -63,23 +64,36 @@ class App extends React.Component {
     })
   }
 
+  _updateImageInfo(data) {
+    api.update(data._id, data)
+      .then(()=>{
+        api.getAll()
+          .then((data)=>{
+            let newAppState = this.state.app.set('frolicks', Immutable.fromJS(data))
+              .set('editingImage', null);
+            this.setState({
+              app: newAppState
+            })
+          })
+      })
+  }
+
   render() {
     let frolicks = this.state.app.get('frolicks');
-    let editingImage = this.state.app.get('editingImage');
-    let selectedId = null;
+    let editingImageId = this.state.app.get('editingImageId');
     let isSubmitting = this.state.app.get('isSubmitting');
 
     let $editOrNewImage = null;
-    if (editingImage) {
-      $editOrNewImage = (<EditImageView editingImage={editingImage.toJS()} isSubmitting={isSubmitting} />);
-      selectedId = editingImage.get('_id');
+    if (editingImageId) {
+      let editingImage = frolicks.find((frolick)=>frolick.get('_id') === editingImageId);
+      $editOrNewImage = (<EditImageView key={editingImage.get('_id')} editingImage={editingImage.toJS()} isSubmitting={isSubmitting} onUpdateImageInfo={this._updateImageInfo} />);
     } else {
       $editOrNewImage = (<ImageUploadView onUploadImage={this._uploadImage} isSubmitting={isSubmitting} />);
     }
 
     return (
       <div className="theContainer">
-        <ImageListView frolicks={frolicks} onAddNewImage={this._addNewImage} onSelectImageToEdit={this._selectEditImage} isSubmitting={isSubmitting} selectedId={selectedId} />
+        <ImageListView frolicks={frolicks} onAddNewImage={this._addNewImage} onSelectImageToEdit={this._selectEditImage} isSubmitting={isSubmitting} selectedId={editingImageId} />
         {$editOrNewImage}
       </div>
     )
