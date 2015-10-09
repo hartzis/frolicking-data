@@ -34,7 +34,11 @@ class EditImageView extends Component {
 
   _handleImageEdits(e) {
     e.preventDefault();
-    console.log('changed-', e);
+    let {value, name} = e.target;
+    console.log('changed-', value, name);
+    this.setState({
+      editingImage: this.state.editingImage.set(name, value);
+    })
   }
 
   _editLocation() {
