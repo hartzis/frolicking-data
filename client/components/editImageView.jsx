@@ -33,11 +33,12 @@ class EditImageView extends Component {
   }
 
   _handleImageEdits(e) {
-    e.preventDefault();
-    let {value, name} = e.target;
-    console.log('changed-', value, name);
+    let {value, name, type, checked} = e.target;
+    if (type === 'checkbox') {
+      value = checked;
+    }
     this.setState({
-      editingImage: this.state.editingImage.set(name, value);
+      editingImage: this.state.editingImage.set(name, value)
     })
   }
 
@@ -66,14 +67,14 @@ class EditImageView extends Component {
   }
 
   render() {
-    let {isSubmitting} = this.props;
-    let {filename} = this.props.editingImage;
+    let {isSubmitting, editingImage} = this.props;
+    let {filename} = editingImage;
     let $images = this._renderImagePreviews(filename);
 
     const imageInfo = this.state.editingImage.toJS();
 
-    let {hasHat, heelClicked, hasOtherPeople, midAir} = imageInfo;
-    let {location:{lng, lat}} = imageInfo;
+    const {hasHat, heelClicked, hasOtherPeople, midAir} = imageInfo;
+    const {location:{lng, lat}} = imageInfo;
 
     // "otherPeople" : [ ],
     // "hasOtherPeople" : false,
@@ -110,20 +111,20 @@ class EditImageView extends Component {
           <button type="submit" disabled={!allowSubmit || isSubmitting}>Update Image</button>*/}
 
           <div>
-            <label htmlFor="editHasHat"> Has Hat?</label>
-            <input id="editHasHat" name="editHasHat" type="checkbox" value={hasHat}/>
+            <label htmlFor="hasHat">Has Hat?</label>
+            <input id="hasHat" name="hasHat" type="checkbox" checked={hasHat}/>
           </div>
           <div>
-            <label htmlFor="editheelClicked">Heel Clicked?</label>
-            <input id="editheelClicked" name="editheelClicked" type="checkbox" value={heelClicked}/>
+            <label htmlFor="heelClicked">Heel Clicked?</label>
+            <input id="heelClicked" name="heelClicked" type="checkbox" checked={heelClicked}/>
           </div>
           <div>
-            <label htmlFor="editMidAir">Mid Air?</label>
-            <input id="editMidAir" name="editMidAir" type="checkbox" value={midAir}/>
+            <label htmlFor="midAir">Mid Air?</label>
+            <input id="midAir" name="midAir" type="checkbox" checked={midAir}/>
           </div>
           <div>
-            <label htmlFor="editHasOtherPeople">Other People?</label>
-            <input id="editHasOtherPeople" name="editHasOtherPeople" type="checkbox" value={hasOtherPeople}/>
+            <label htmlFor="hasOtherPeople">Other People?</label>
+            <input id="hasOtherPeople" name="hasOtherPeople" type="checkbox" checked={hasOtherPeople}/>
           </div>
           <div>
             <label htmlFor="latlong">Lat/Lng</label>
