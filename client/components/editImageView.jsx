@@ -4,7 +4,18 @@ let {PropTypes, Component} = React;
 let DatePicker = require('./react-datepicker/src/datepicker.jsx');
 let moment = require('moment');
 
+let Select = require('react-select');
+
 let {GoogleMap, Marker} = require('react-google-maps');
+
+let options = [
+    { value: 'one', label: 'One' },
+    { value: 'two', label: 'Two' }
+];
+
+function logChange(val) {
+    console.log("Selected: " + val);
+}
 
 class EditImageView extends Component {
   constructor(props) {
@@ -133,6 +144,7 @@ class EditImageView extends Component {
             {this.state.editLoc ? (<span>*EDITING LOC*</span>) : null}
           </div>
         </form>
+        <Select name="form-field-name" value="one" options={options} onChange={logChange} />
         <div style={{height: '400px'}}>
           <GoogleMap containerProps={{
               ...this.props,
