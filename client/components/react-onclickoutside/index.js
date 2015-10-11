@@ -15,7 +15,7 @@
 
 "use strict";
 
-var React = require('react');
+var ReactDOM = require('react-dom');
 
 // Use a parallel array because we can't use
 // objects as keys, they get toString-coerced
@@ -45,7 +45,7 @@ module.exports = {
         }
         eventHandler(evt);
       }
-    }(React.findDOMNode(this), this.handleClickOutside));
+    }(ReactDOM.findDOMNode(this), this.handleClickOutside));
 
     var pos = registeredComponents.length;
     registeredComponents.push(this);

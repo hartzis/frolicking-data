@@ -1,4 +1,5 @@
 let React = require('react');
+let ReactDOM = require('react-dom');
 let Immutable = require('immutable');
 let api = require('../services/apiService');
 let ImageUploadView = require('./imageUploadView.jsx');
@@ -60,7 +61,7 @@ class App extends React.Component {
 
   _addNewImage() {
    this.setState({
-      app: this.state.app.set('editingImage', null)
+      app: this.state.app.set('editingImageId', null)
     })
   }
 
@@ -101,4 +102,5 @@ class App extends React.Component {
 
 }
 
-React.render(<App />, document.getElementById('theApp'));
+ReactDOM.render(<App />, document.getElementById('theApp'));
+console.log('halp;');
