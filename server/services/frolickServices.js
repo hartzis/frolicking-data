@@ -1,22 +1,16 @@
 let Frolicks = require('../models/frolicks');
-
-const currentFrolicks = [
-  {
-    id: 1,
-    name: 'munich'
-  },
-  {
-    id: 2,
-    name: 'paris'
-  }
-]
+let _ = require('lodash');
 
 module.exports = {
 
   // get all the frolicks
   getAll(req, res) {
     Frolicks.find((err, allFrolicks)=>{
-      res.send(allFrolicks);
+      let tags = collectTags(allFrolicks);
+      res.send({
+        frolicks: allFrolicks,
+        tags
+      });
     })
   },
   update(req, res) {
@@ -30,4 +24,17 @@ module.exports = {
     })
   }
 
+}
+
+function collectTags(frolicks) {
+  return _.chain(frolicks)
+    .reduce((result, val, key)=>{
+        val.tags.forEach((tag)=>{
+          if (!result[tag]) {
+            result[tag] = tag;
+          }
+        })
+        return result;
+      }, {})
+    .map((val, key)=>{return val});
 }

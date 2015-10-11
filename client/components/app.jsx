@@ -12,10 +12,12 @@ class App extends React.Component {
     this.state = {
       app: Immutable.fromJS({
         frolicks: [],
+        tags: [],
         editingImageId: null,
         isSubmitting: false
       }),
     };
+    this._getAllFrolicksAndTags = this._getAllFrolicksAndTags.bind(this);
     this._uploadImage = this._uploadImage.bind(this);
     this._setSubmitting = this._setSubmitting.bind(this);
     this._selectEditImage = this._selectEditImage.bind(this);
@@ -25,10 +27,16 @@ class App extends React.Component {
 
   componentDidMount() {
     window.daApp = this;
+    this._getAllFrolicksAndTags();
+  }
+
+  _getAllFrolicksAndTags() {
     api.getAll()
       .then((data) => {
+        let newAppState = this.state.app.set('frolicks', Immutable.fromJS(data.frolicks))
+          .set('tags', Immutable.fromJS(data.tags));
         this.setState({
-          app: this.state.app.set('frolicks', Immutable.fromJS(data))
+          app: newAppState
         })
       })
   }
@@ -38,12 +46,9 @@ class App extends React.Component {
     this._setSubmitting(true);
     api.uploadImage(imageInfo)
       .then((response)=>{
-        this.setState({
-          app: Immutable.Map({
-            frolicks: Immutable.fromJS(response.allFrolicks),
-            editingImage: Immutable.fromJS(response.savedFrolick)
-          })
-        }, ()=>this._setSubmitting(false))
+        let newAppState = this.state.app.set('frolicks', Immutable.fromJS(response.allFrolicks))
+          .set('editingImageId', Immutable.fromJS(response.savedFrolick._id));
+        this.setState({ app: newAppState }, ()=>this._setSubmitting(false))
       })
   }
 
@@ -68,14 +73,7 @@ class App extends React.Component {
   _updateImageInfo(data) {
     api.update(data._id, data)
       .then(()=>{
-        api.getAll()
-          .then((data)=>{
-            let newAppState = this.state.app.set('frolicks', Immutable.fromJS(data))
-              .set('editingImage', null);
-            this.setState({
-              app: newAppState
-            })
-          })
+        this._getAllFrolicksAndTags();
       })
   }
 
@@ -83,11 +81,18 @@ class App extends React.Component {
     let frolicks = this.state.app.get('frolicks');
     let editingImageId = this.state.app.get('editingImageId');
     let isSubmitting = this.state.app.get('isSubmitting');
+    let tags = this.state.app.get('tags').toJS();
 
     let $editOrNewImage = null;
     if (editingImageId) {
       let editingImage = frolicks.find((frolick)=>frolick.get('_id') === editingImageId);
-      $editOrNewImage = (<EditImageView key={editingImage.get('_id')} editingImage={editingImage.toJS()} isSubmitting={isSubmitting} onUpdateImageInfo={this._updateImageInfo} />);
+      $editOrNewImage = (
+        <EditImageView key={editingImage.get('_id')}
+        editingImage={editingImage.toJS()}
+        isSubmitting={isSubmitting} 
+        onUpdateImageInfo={this._updateImageInfo}
+        tags={tags} />
+      );
     } else {
       $editOrNewImage = (<ImageUploadView onUploadImage={this._uploadImage} isSubmitting={isSubmitting} />);
     }

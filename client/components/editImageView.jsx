@@ -8,21 +8,13 @@ let Select = require('react-select');
 
 let {GoogleMap, Marker} = require('react-google-maps');
 
-let options = [
-    { value: 'one', label: 'One' },
-    { value: 'two', label: 'Two' }
-];
-
-function logChange(val) {
-    console.log("Selected: " + val);
-}
-
 class EditImageView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       editingImage: Immutable.fromJS(props.editingImage),
-      editLoc: false
+      editLoc: false,
+      tags: Immutable.Set(props.tags)
     };
     window.fuckingState = this.state;
 
@@ -31,6 +23,7 @@ class EditImageView extends Component {
     this._onSelectLocation = this._onSelectLocation.bind(this);
     this._editLocation = this._editLocation.bind(this);
     this._save = this._save.bind(this);
+    this._updateTags = this._updateTags.bind(this);
   }
 
   _save() {
@@ -40,7 +33,15 @@ class EditImageView extends Component {
 
   _handleSubmitUpdate(e) {
     e.preventDefault();
-    console.log('update image-');
+  }
+
+  _updateTags(newTag, allArray) {
+    let tags = allArray.map((tag)=>tag.value);
+    console.log('newTag', newTag, 'tags-', tags);
+    this.setState({
+      editingImage: this.state.editingImage.set('tags', Immutable.fromJS(tags)),
+      tags: this.state.tags.add(newTag)
+    })
   }
 
   _handleImageEdits(e) {
@@ -83,8 +84,12 @@ class EditImageView extends Component {
     let $images = this._renderImagePreviews(filename);
 
     const imageInfo = this.state.editingImage.toJS();
+    const availableTags = this.state.tags.toJS().map((tag)=>{
+      return {value:tag, label:tag};
+    });
 
-    const {hasHat, heelClicked, hasOtherPeople, midAir} = imageInfo;
+    const {hasHat, heelClicked, hasOtherPeople, midAir, tags} = imageInfo;
+    const selectedTags = tags.join(',');
     const {location:{lng, lat}} = imageInfo;
 
     // "otherPeople" : [ ],
@@ -96,8 +101,8 @@ class EditImageView extends Component {
     //   "country" : "",
     //   "state" : "",
     //   "city" : "",
-    //   "lng" : "",
-    //   "lat" : ""
+    //   "lng" : 234.34,
+    //   "lat" : 123.34
     // },
     // "tags" : [ ],
     // "story" : "",
@@ -144,7 +149,17 @@ class EditImageView extends Component {
             {this.state.editLoc ? (<span>*EDITING LOC*</span>) : null}
           </div>
         </form>
-        <Select name="form-field-name" value="one" options={options} onChange={logChange} />
+        <div>
+          <label htmlFor="tags">Tags:</label>
+          <Select name="tags"
+            value={selectedTags}
+            options={availableTags}
+            onChange={this._updateTags}
+            multi={true}
+            allowCreate={true}
+            ignoreCase={true}
+            delimeter=','/>
+        </div>
         <div style={{height: '400px'}}>
           <GoogleMap containerProps={{
               ...this.props,
