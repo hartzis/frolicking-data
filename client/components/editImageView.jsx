@@ -49,6 +49,7 @@ class EditImageView extends Component {
     if (type === 'checkbox') {
       value = checked;
     }
+    console.log(name, type, value);
     this.setState({
       editingImage: this.state.editingImage.set(name, value)
     })
@@ -88,7 +89,7 @@ class EditImageView extends Component {
       return {value:tag, label:tag};
     });
 
-    const {hasHat, heelClicked, hasOtherPeople, midAir, tags} = imageInfo;
+    const {hasHat, heelClicked, hasOtherPeople, midAir, tags, description} = imageInfo;
     const selectedTags = tags.join(',');
     const {location:{lng, lat}} = imageInfo;
 
@@ -147,6 +148,10 @@ class EditImageView extends Component {
             <input style={{width:"300px"}} id="latlong" name="latlong" disabled={true} type="text" value={lat+', '+lng}/>
             <button onClick={this._editLocation}>add/edit loc</button>
             {this.state.editLoc ? (<span>*EDITING LOC*</span>) : null}
+          </div>
+          <div>
+            <label htmlFor="description">Tags:</label>
+            <textarea id="description" rows="4" cols="50" name="description" value={description} />
           </div>
         </form>
         <div>
