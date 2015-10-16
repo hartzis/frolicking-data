@@ -1,12 +1,12 @@
 # frolicking-data
 Image metadata manager, manage tags, geolocation, notes and more. Also create different sized images.
 
-- [ ] Add new image
+- [X] Add new image
   - [X] Upload image
     - [X] Create new images of specific sizes for web app
   - [ ] Manage metadata
     - [ ] Add Tags and Info like title
-    - [ ] Add geolocation: Lat/Long
-      - [ ] Select spot on a map and/or type in location
+    - [X] Add geolocation: Lat/Long
+      - [X] Select spot on a map ~~and/or type in location~~
 - [ ] Manage all images / list
-  - [ ] Edit previously saved images
+  - [X] Edit previously saved images
