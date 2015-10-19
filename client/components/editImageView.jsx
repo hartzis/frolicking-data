@@ -24,6 +24,7 @@ class EditImageView extends Component {
     this._editLocation = this._editLocation.bind(this);
     this._save = this._save.bind(this);
     this._updateTags = this._updateTags.bind(this);
+    this._handleDateChange = this._handleDateChange.bind(this);
   }
 
   _save() {
@@ -44,12 +45,20 @@ class EditImageView extends Component {
     })
   }
 
+  _handleDateChange(data) {
+    console.log('date update-', data.format('YYYY-MM-DD'));
+    this.setState({
+      editingImage: this.state.editingImage.set('date', data.format('YYYY-MM-DD'))
+    });
+  }
+
   _handleImageEdits(e) {
     let {value, name, type, checked} = e.target;
+    console.log('edit-', value, name, type, checked);
+    if (!name) return;
     if (type === 'checkbox') {
       value = checked;
     }
-    console.log(name, type, value);
     this.setState({
       editingImage: this.state.editingImage.set(name, value)
     })
@@ -89,9 +98,11 @@ class EditImageView extends Component {
       return {value:tag, label:tag};
     });
 
-    const {hasHat, heelClicked, hasOtherPeople, midAir, tags, description} = imageInfo;
+    const {hasHat, heelClicked, hasOtherPeople, midAir, tags, description, title, date} = imageInfo;
     const selectedTags = tags.join(',');
     const {location:{lng, lat}} = imageInfo;
+
+    let momentDate = moment(date);
 
     // "otherPeople" : [ ],
     // "hasOtherPeople" : false,
@@ -123,10 +134,13 @@ class EditImageView extends Component {
 
         <form onChange={this._handleImageEdits} onSubmit={this._handleSubmitUpdate}>
 
-          {/*<DatePicker onChange={this._handleDateChange} selected={imageDate} />
-          <input type="text" onChange={this._handleTitleChange} value={imageTitle} />
-          <button type="submit" disabled={!allowSubmit || isSubmitting}>Update Image</button>*/}
-
+          <div>
+            <label htmlFor="title">Title:</label>
+            <input id="title" name="title" type="text" value={title}/>
+          </div>
+          <div>
+            Date:<DatePicker onChange={this._handleDateChange} selected={momentDate} />
+          </div>
           <div>
             <label htmlFor="hasHat">Has Hat?</label>
             <input id="hasHat" name="hasHat" type="checkbox" checked={hasHat}/>
@@ -150,7 +164,7 @@ class EditImageView extends Component {
             {this.state.editLoc ? (<span>*EDITING LOC*</span>) : null}
           </div>
           <div>
-            <label htmlFor="description">Tags:</label>
+            <label htmlFor="description">Description:</label>
             <textarea id="description" rows="4" cols="50" name="description" value={description} />
           </div>
         </form>

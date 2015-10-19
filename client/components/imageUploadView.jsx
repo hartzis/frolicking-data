@@ -55,6 +55,8 @@ class ImageUploadView extends Component {
   }
 
   _handleDateChange(data) {
+    console.log('date-', data);
+    debugger;
     this.setState({imageDate: data}, ()=>this._checkIfCanSubmit());
   }
 

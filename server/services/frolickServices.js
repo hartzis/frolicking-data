@@ -1,5 +1,6 @@
 let Frolicks = require('../models/frolicks');
 let _ = require('lodash');
+let moment = require('moment');
 
 module.exports = {
 
@@ -16,6 +17,8 @@ module.exports = {
   update(req, res) {
     let frolick = req.body;
     console.log('updating-', frolick._id, 'with-', frolick);
+    // fix date formate, boo
+    frolick.date = new Date(moment(frolick.date).format())
     Frolicks.update({_id: frolick._id}, frolick, function(err){
       if(!err) {
         console.log('updated-', frolick._id);
